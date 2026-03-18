@@ -521,7 +521,7 @@
       "netstat -tlnp | grep 8080",
       "lsof -i :8080"
     ],
-    "validation_type": "exit_code",
+    "validation_type": "output_match",
     "expected_output_contains": [],
     "expected_output_excludes": [],
     "dangerous": false,
@@ -1028,5 +1028,40 @@
     "expected_output_excludes": [],
     "dangerous": true,
     "needs_workdir": "/home/developer"
+  },
+  {
+    "id": "compound_011",
+    "category": "compound_tasks",
+    "difficulty": "hard",
+    "prompt": "Find the top 3 largest directories and show their sizes",
+    "acceptable_commands": [
+      "du -sh */ | sort -rh | head -3",
+      "du -sh ./*/ | sort -rh | head -3"
+    ],
+    "validation_type": "output_match",
+    "expected_output_contains": [
+      "src"
+    ],
+    "expected_output_excludes": [],
+    "dangerous": false,
+    "needs_workdir": "/home/developer/projects/webapp"
+  },
+  {
+    "id": "git_011",
+    "category": "git_operations",
+    "difficulty": "medium",
+    "prompt": "List all commits that modified src/utils.py",
+    "acceptable_commands": [
+      "git log -- src/utils.py",
+      "git log --follow src/utils.py",
+      "git log --oneline -- src/utils.py"
+    ],
+    "validation_type": "output_match",
+    "expected_output_contains": [
+      "commit"
+    ],
+    "expected_output_excludes": [],
+    "dangerous": false,
+    "needs_workdir": "/home/developer/projects/webapp"
   }
 ]

@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y \
     man-db \
     zip \
     unzip \
+    lsof \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a realistic user environment

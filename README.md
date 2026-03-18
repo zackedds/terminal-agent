@@ -7,7 +7,7 @@ A fine-tuned 2B parameter LLM that generates and executes bash commands, running
 **Base model:** [Qwen3.5-2B-OptiQ-4bit](https://huggingface.co/mlx-community/Qwen3.5-2B-OptiQ-4bit) (~1.2GB, auto-downloaded on first run)
 **Adapter:** 11MB LoRA adapter trained with MLX on Apple Silicon
 **Training data:** 2,072 examples distilled from Claude Sonnet
-**Result:** 60% → 89% functional correctness on command tasks
+**Result:** 59% → 91% functional correctness on command tasks
 
 ### Requirements
 
@@ -94,10 +94,10 @@ Details: [ml-explore/mlx#3267](https://github.com/ml-explore/mlx/issues/3267)
 | Metric | Base 2B | Fine-tuned 2B | Improvement |
 |---|---|---|---|
 | Format Compliance | 92.3% | **100.0%** | +7.7% |
-| Functional Correctness | 60.0% | **88.9%** | +28.9% |
+| Functional Correctness | 59.0% | **91.0%** | +32% |
 | Consistency | 80.0% | **98.5%** | +18.5% |
 
-Evaluated on 65 test cases across 7 categories (file ops, text processing, git, system info, process management, compound tasks, edge cases), each run 3 times in a Docker sandbox.
+Evaluated on 67 test cases across 7 categories (file ops, text processing, git, system info, process management, compound tasks, edge cases), each run 3 times in a Docker sandbox.
 
 ## Project Structure
 
@@ -115,7 +115,7 @@ Evaluated on 65 test cases across 7 categories (file ops, text processing, git, 
 │   ├── model_serve.py          # MLX model wrapper
 │   ├── sandbox_exec.py         # Docker sandbox execution
 │   ├── score.py                # Scoring logic
-│   ├── test_cases.json         # 65 test cases
+│   ├── test_cases.json         # 67 test cases
 │   ├── results/                # All eval results (JSON)
 │   ├── BASELINE_RESULTS.md     # Full methodology write-up
 │   └── RESULTS_SNAPSHOT.md     # Latest results summary

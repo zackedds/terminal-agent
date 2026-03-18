@@ -5,7 +5,7 @@
 
 ![Demo](./assets/demo.gif)
 
-**TL;DR:** Fine-tuned a 2B parameter model to be a terminal assistant using QLoRA on a MacBook. 60% to 89% accuracy on bash command generation. Discovered a macOS GPU bug along the way and got an undocumented fix from the MLX team. Everything runs locally, trained in 28 minutes, $0 compute cost. **[GitHub Repo](https://github.com/zackedds/terminal-agent)**
+**TL;DR:** Fine-tuned a 2B parameter model to be a terminal assistant using QLoRA on a MacBook. 59% → 91% accuracy on bash command generation. Discovered a macOS GPU bug along the way and got an undocumented fix from the MLX team. Everything runs locally, trained in 28 minutes, $0 compute cost. **[GitHub Repo](https://github.com/zackedds/terminal-agent)**
 
 ---
 
@@ -38,7 +38,7 @@ The setup:
 - **Docker sandbox** running Ubuntu 22.04 with a realistic developer workspace (Python/JS webapp, git history, multiple branches, log files)
 - **Network isolation** so nothing phones home
 - **Fresh container per trial** so tests can't contaminate each other
-- **65 test cases** across 7 categories, each run **3 times** (195 total trials per evaluation)
+- **67 test cases** across 7 categories, each run **3 times** (201 total trials per evaluation)
 - **Automated scoring** on format compliance, syntax validity, execution success, functional correctness, and consistency
 
 This eval-first approach meant every training decision was data-driven. When a later training run regressed, I didn't have to guess. The numbers told me exactly what broke and by how much.
@@ -183,9 +183,9 @@ With the larger dataset, the model trained for 2000 iterations while maintaining
 
 ## Where Things Stand
 
-After removing the conflicting safety data and retraining, the model translates natural language into bash commands at ~89% accuracy:
+After removing the conflicting safety data and retraining, the model translates natural language into bash commands at ~91% accuracy:
 
-- **88.9% correctness** on command tasks (up from 60% base)
+- **91% correctness** on command tasks (up from 59% base)
 - **100% format compliance**, **98.5% consistency**
 - Runs entirely on a MacBook (~1.2GB quantized model + 11MB LoRA adapter)
 - Generates responses in 2-5 seconds
