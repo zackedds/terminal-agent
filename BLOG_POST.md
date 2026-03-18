@@ -5,7 +5,7 @@
 
 ![Demo](./assets/demo.gif)
 
-**TL;DR:** Fine-tuned a 2B parameter model to be a terminal assistant using QLoRA on a MacBook. 59% → 91% accuracy on bash command generation. Discovered a macOS GPU bug along the way and got an undocumented fix from the MLX team. Everything runs locally, trained in 28 minutes, $0 compute cost. **[GitHub Repo](https://github.com/zackedds/terminal-agent)**
+**TL;DR:** Fine-tuned a 2B parameter model to be a terminal assistant using QLoRA on a MacBook. 59% → 91% accuracy on bash command generation, beating a model twice its size on most metrics with an 11MB adapter. Discovered a macOS GPU bug along the way and got an undocumented fix from the MLX team. Everything runs locally, trained in 28 minutes, $0 compute cost. **[GitHub Repo](https://github.com/zackedds/terminal-agent)**
 
 ---
 
@@ -79,7 +79,7 @@ The whole thing trained in **28 minutes** on the M2 Pro. No cloud. No CUDA. Just
 | Execution Success | 66.7% | **84.4%** | 80.0% |
 | Consistency | 77.8% | **93.3%** | 84.4% |
 
-The fine-tuned 2B beat the 4B base model on execution success, format compliance, and consistency. An 11MB LoRA adapter closed a 26-point gap and made a 2B model competitive with one twice its size.
+**The fine-tuned 2B beat the 4B base model on execution success, format compliance, and consistency.** An 11MB adapter, half the model size, outperforming on 3 of 4 metrics.
 
 ![All metrics comparison](./assets/chart_all_metrics.png)
 
@@ -199,34 +199,6 @@ A few of the remaining failures are false negatives from eval strictness (correc
 
 ![Screenshot](./assets/demo_screenshot.png)
 
-Eval numbers are one thing. Actually using it is another. Here's what a real session looks like:
-
-```
-> how many lines of code are in each python file
-  $ find . -name "*.py" | xargs wc -l
-   11 ./tests/test_utils.py
-    7 ./tests/test_api.py
-   34 ./src/utils.py
-   30 ./src/api.py
-   14 ./src/main.py
-   96 total
-
-> find all files that contain the word flask
-  $ grep -rl "flask" . --include="*"
-  ./requirements.txt
-
-> show disk usage by directory sorted biggest first
-  $ du -sh */ | sort -rh
-  20K   src/
-  12K   tests/
-  12K   scripts/
-  8.0K  docs/
-  8.0K  config/
-
-> create a file called notes.txt with the text hello world
-  $ echo "hello world" > notes.txt
-```
-
 It handles the everyday stuff well: file searches, git commands, disk usage, text processing, piping output between tools. Occasionally it'll pick a slightly wrong flag or miss a nuance, but the approval prompt catches those. For a 2B model running at 33 tokens/sec entirely on a laptop with no internet connection required, it's genuinely useful.
 
 ## The Task Interference Problem
@@ -267,15 +239,15 @@ Could we go smaller? The Qwen 3.5 family doesn't have a text model below 2B (the
 
 ## What I Took Away From This
 
-**Eval first, always.** Build the evaluation suite before writing training code. When a training run regressed from 82% to 73%, the eval caught it immediately and showed exactly which categories broke.
+**Eval first, always.** Every training decision was data-driven. When a run regressed, the eval caught it immediately.
 
-**LoRA surfaces, it doesn't create.** The base model already knew bash. Fine-tuning taught it when and how to use what it already had. Pick a base model that has the knowledge you need, then use LoRA to direct it.
+**LoRA surfaces, it doesn't create.** Pick a base model that already has the knowledge. LoRA directs it, it doesn't teach from scratch.
 
-**Contradictory training signals break low-rank adapters.** Mixing safety/refusal examples with command examples degraded results. The adapter can't represent opposing objectives in the same narrow subspace.
+**When something crashes, dig in.** My first instinct with the GPU crash was to work around it. But stepping back and actually investigating led to a workaround that proved the root cause, which led to a well-documented bug report, which got an immediate fix that wasn't available anywhere on the public internet. The auto-resume script was duct tape. The controlled experiment was the real fix.
 
-**When something crashes, dig in.** My first instinct with the GPU crash was to work around it. But stepping back and actually investigating led to a workaround that proved the root cause, which led to a well-documented bug report, which got an immediate fix from the MLX team that wasn't available anywhere on the public internet.
+**Contradictory training signals break low-rank adapters.** This was the most surprising finding. Adding safety examples alongside command examples actively degraded performance. The research backs it up: low-rank adapters can't represent opposing objectives in the same subspace. The fix was to stop fighting the adapter and handle safety at the application layer instead.
 
-**Knowledge distillation works.** Frontier model generates training data, tiny model learns from it, tiny model runs on-device forever with zero marginal cost.
+**Knowledge distillation works.** Frontier model generates data, tiny model learns from it, runs on-device forever with zero marginal cost.
 
 ## What's Next
 
