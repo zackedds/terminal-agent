@@ -1,0 +1,17 @@
+# QLoRA training config - 8 layers, 4000 iters (~3.2 epochs)
+# Resumes from v3 iter-1000 checkpoint
+
+model: "mlx-community/Qwen3.5-2B-OptiQ-4bit"
+fine_tune_type: "lora"
+batch_size: 1
+num_layers: 8
+lora_parameters:
+  rank: 8
+  scale: 20.0
+  dropout: 0.0
+iters: 4000
+steps_per_eval: 500
+learning_rate: 1.0e-5
+grad_checkpoint: true
+mask_prompt: true
+max_seq_length: 256

@@ -1,0 +1,26 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+._*
+
+# MLX model cache (downloaded from HuggingFace)
+~/.cache/huggingface/
+
+# Large adapter checkpoints (keep final adapters.safetensors only)
+**/0*_adapters.safetensors
+
+# Claude Code
+.claude/
+
+# IDE
+.vscode/
+.idea/
+
+# Temp
+*.log
+*.tmp

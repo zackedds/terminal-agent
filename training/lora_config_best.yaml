@@ -1,0 +1,20 @@
+# v5: 2x data, dropout, cosine LR decay
+model: "mlx-community/Qwen3.5-2B-OptiQ-4bit"
+fine_tune_type: "lora"
+batch_size: 1
+num_layers: 8
+lora_parameters:
+  rank: 8
+  scale: 20.0
+  dropout: 0.05
+iters: 2000
+steps_per_eval: 500
+save_every: 200
+learning_rate: 1.0e-5
+lr_schedule:
+  name: "cosine_decay"
+  arguments: [1.0e-5, 2000]
+  warmup: 100
+grad_checkpoint: true
+mask_prompt: true
+max_seq_length: 256

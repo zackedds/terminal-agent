@@ -1,0 +1,11 @@
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: terminal-assistant-sandbox
+    network_mode: "none"
+    stdin_open: true
+    tty: true
+    mem_limit: 512m
+    cpus: 1.0

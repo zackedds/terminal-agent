@@ -1,0 +1,47 @@
+{
+    "adapter_path": "./adapters_v5",
+    "batch_size": 1,
+    "config": "./training/lora_config_v5.yaml",
+    "data": "./data",
+    "fine_tune_type": "lora",
+    "grad_accumulation_steps": 1,
+    "grad_checkpoint": true,
+    "iters": 2000,
+    "learning_rate": 1e-05,
+    "lora_parameters": {
+        "rank": 8,
+        "scale": 20.0,
+        "dropout": 0.05
+    },
+    "lr_schedule": {
+        "name": "cosine_decay",
+        "arguments": [
+            1e-05,
+            2000
+        ],
+        "warmup": 100
+    },
+    "mask_prompt": true,
+    "max_seq_length": 256,
+    "model": "mlx-community/Qwen3.5-2B-OptiQ-4bit",
+    "num_layers": 8,
+    "optimizer": "adam",
+    "optimizer_config": {
+        "adam": {},
+        "adamw": {},
+        "muon": {},
+        "sgd": {},
+        "adafactor": {}
+    },
+    "project_name": null,
+    "report_to": null,
+    "resume_adapter_file": null,
+    "save_every": 200,
+    "seed": 0,
+    "steps_per_eval": 500,
+    "steps_per_report": 10,
+    "test": false,
+    "test_batches": 500,
+    "train": true,
+    "val_batches": 25
+}
