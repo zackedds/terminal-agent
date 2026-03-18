@@ -95,8 +95,13 @@ class TerminalAssistant:
     def __init__(self, model_path: str, adapter_path: str | None = None, dev: bool = False):
         self.dev = dev
         self._log("Loading model...")
+        import logging
+        logging.disable(logging.WARNING)
         from mlx_lm import load
-        self.model, self.tokenizer = load(model_path, adapter_path=adapter_path)
+        import os, contextlib
+        with contextlib.redirect_stderr(open(os.devnull, 'w')) if not dev else contextlib.nullcontext():
+            self.model, self.tokenizer = load(model_path, adapter_path=adapter_path)
+        logging.disable(logging.NOTSET)
         self._log("Model loaded.")
 
         self.system_prompt = (
@@ -235,7 +240,7 @@ def exec_sandbox(command: str, timeout: int = 30) -> tuple[str, str, int]:
 # ---------------------------------------------------------------------------
 
 def print_command(cmd: str):
-    print(f"\n\033[1;36m$ {cmd}\033[0m")
+    print(f"\033[1;36m$ {cmd}\033[0m")
 
 
 def print_output(stdout: str, stderr: str, exit_code: int):
@@ -245,6 +250,7 @@ def print_output(stdout: str, stderr: str, exit_code: int):
         print(f"\033[33m{stderr}\033[0m", end="" if stderr.endswith("\n") else "\n")
     if exit_code != 0:
         print(f"\033[31m(exit code {exit_code})\033[0m")
+    print()  # blank line after output, before next prompt
 
 
 def print_thinking(thinking: str):
@@ -268,8 +274,51 @@ def prompt_approval(command: str, reason: str = "") -> bool:
 
 
 def print_dev_stats(result: dict):
-    print(f"\033[90m[dev] {result['input_tokens']} in / {result['output_tokens']} out | "
+    print(f"\033[90m  {result['input_tokens']} in / {result['output_tokens']} out | "
           f"{result['elapsed_s']:.2f}s | {result['tokens_per_sec']:.1f} tok/s\033[0m")
+
+
+class Spinner:
+    """Animated spinner for model generation."""
+    FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+
+    def __init__(self):
+        self._thread = None
+        self._stop = False
+
+    def start(self):
+        import threading
+        self._stop = False
+        self._thread = threading.Thread(target=self._spin, daemon=True)
+        self._thread.start()
+
+    def _spin(self):
+        import time
+        i = 0
+        while not self._stop:
+            frame = self.FRAMES[i % len(self.FRAMES)]
+            print(f"\r\033[36m{frame}\033[0m \033[90mthinking...\033[0m", end="", flush=True)
+            time.sleep(0.08)
+            i += 1
+        print(f"\r{' ' * 20}\r", end="", flush=True)
+
+    def stop(self):
+        self._stop = True
+        if self._thread:
+            self._thread.join()
+
+
+def print_banner(mode: str, auto: bool, dev: bool, model_name: str = "Qwen 3.5 2B"):
+    tags = [mode]
+    if auto: tags.append("auto")
+    if dev: tags.append("dev")
+    tag_str = " | ".join(tags)
+
+    print()
+    print(f"  \033[1;36m> terminal-agent\033[0m")
+    print(f"  \033[90m{model_name} + LoRA | {tag_str}\033[0m")
+    print(f"  \033[90mType a request. Ctrl+C to exit.\033[0m")
+    print()
 
 
 # ---------------------------------------------------------------------------
@@ -278,25 +327,25 @@ def print_dev_stats(result: dict):
 
 def run_interactive(assistant: TerminalAssistant, auto: bool = False, sandbox: bool = False, dev: bool = False):
     executor = exec_sandbox if sandbox else exec_local
-    env_label = "sandbox" if sandbox else "local"
-
-    print(f"\033[1mTerminal Assistant\033[0m (running on {env_label})")
-    print(f"Type a request, or 'quit' to exit.\n")
+    mode = "sandbox" if sandbox else "local"
+    print_banner(mode, auto, dev)
 
     while True:
         try:
-            user_input = input("\033[1;32myou>\033[0m ").strip()
+            user_input = input("\033[1;32m> \033[0m").strip()
         except (EOFError, KeyboardInterrupt):
-            print("\nBye!")
+            print()
             break
 
         if not user_input:
             continue
         if user_input.lower() in ("quit", "exit", "q"):
-            print("Bye!")
             break
 
+        spinner = Spinner()
+        spinner.start()
         result = assistant.ask(user_input)
+        spinner.stop()
 
         if dev:
             print_dev_stats(result)

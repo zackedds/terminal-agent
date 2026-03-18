@@ -2,19 +2,28 @@
 
 A fine-tuned 2B parameter LLM that generates and executes bash commands, running entirely on a MacBook.
 
-**Base model:** [Qwen3.5-2B-OptiQ-4bit](https://huggingface.co/mlx-community/Qwen3.5-2B-OptiQ-4bit) (~1.2GB)
+**Base model:** [Qwen3.5-2B-OptiQ-4bit](https://huggingface.co/mlx-community/Qwen3.5-2B-OptiQ-4bit) (~1.2GB, auto-downloaded on first run)
 **Adapter:** 11MB LoRA adapter trained with MLX on Apple Silicon
 **Training data:** 2,072 examples distilled from Claude Sonnet
 **Result:** 60% → 89% functional correctness on command tasks
+
+### Requirements
+
+- **Apple Silicon Mac** (M1/M2/M3/M4) — MLX is Apple Silicon only
+- **Python 3.11+**
+- **Docker** (optional, for sandbox mode)
 
 ## Quick Start
 
 ```bash
 # Setup
+git clone https://github.com/zackedds/terminal-agent.git
+cd terminal-agent
 python3 -m venv .venv && source .venv/bin/activate
-pip install mlx-lm
+pip install -r requirements.txt
 
 # Interactive mode (approve each command)
+# First run downloads the base model (~1.2GB) from HuggingFace
 python3 cli.py
 
 # Auto-execute safe commands
@@ -34,7 +43,7 @@ python3 cli.py "find all python files with TODO comments"
 ## How It Works
 
 ```
-you> how many lines of code are in each python file
+> how many lines of code are in each python file
   $ find . -name "*.py" | xargs wc -l
 Execute? [y/N] y
    11 ./tests/test_utils.py
