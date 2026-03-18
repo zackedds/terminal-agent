@@ -189,7 +189,7 @@ After removing the conflicting safety data and retraining, the model translates 
 - **100% format compliance**, **98.5% consistency**
 - Runs entirely on a MacBook (~1.2GB quantized model + 11MB LoRA adapter)
 - Generates responses in 2-5 seconds
-- Trained in 26 minutes with $0 in compute costs
+- Trained in 28 minutes with $0 in compute costs
 
 A few of the remaining failures are false negatives from eval strictness (correct commands that fail in the sandbox due to missing tools), not actual model errors. Safety is handled at the application layer with a command blacklist and approval workflow rather than in the model weights.
 
@@ -199,7 +199,7 @@ A few of the remaining failures are false negatives from eval strictness (correc
 
 ![Screenshot](./assets/demo_screenshot.png)
 
-It handles the everyday stuff well: file searches, git commands, disk usage, text processing, piping output between tools. Occasionally it'll pick a slightly wrong flag or miss a nuance, but the approval prompt catches those. For a 2B model running at 33 tokens/sec entirely on a laptop with no internet connection required, it's genuinely useful.
+It handles the everyday stuff well: file searches, git commands, disk usage, text processing, piping output between tools. Occasionally it'll pick a slightly wrong flag or miss a nuance, but the approval prompt catches those. For a 2B model running at ~60 tokens/sec (slightly less with the LoRA adapter loaded) entirely on a laptop with no internet connection required, it's genuinely useful.
 
 ## The Task Interference Problem
 
