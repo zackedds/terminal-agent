@@ -1,6 +1,8 @@
-# Terminal Assistant
+# terminal-agent
 
 A fine-tuned 2B parameter LLM that generates and executes bash commands, running entirely on a MacBook.
+
+![Demo](./assets/demo.gif)
 
 **Base model:** [Qwen3.5-2B-OptiQ-4bit](https://huggingface.co/mlx-community/Qwen3.5-2B-OptiQ-4bit) (~1.2GB, auto-downloaded on first run)
 **Adapter:** 11MB LoRA adapter trained with MLX on Apple Silicon
@@ -44,8 +46,7 @@ python3 cli.py "find all python files with TODO comments"
 
 ```
 > how many lines of code are in each python file
-  $ find . -name "*.py" | xargs wc -l
-Execute? [y/N] y
+$ find . -name "*.py" | xargs wc -l
    11 ./tests/test_utils.py
    34 ./src/utils.py
    30 ./src/api.py
@@ -126,6 +127,7 @@ Evaluated on 65 test cases across 7 categories (file ops, text processing, git, 
 │   ├── Dockerfile              # Ubuntu 22.04 eval sandbox
 │   ├── docker-compose.yml      # Network-isolated container
 │   └── setup_workspace.sh      # Populates sandbox with test project
+├── assets/                     # Charts, demo GIF, screenshots
 ├── BLOG_POST.md                # Full project write-up
 └── RESEARCH_NOTES.md           # LoRA capacity and task interference research
 ```
