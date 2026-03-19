@@ -251,7 +251,7 @@ Could we go smaller? The Qwen 3.5 family doesn't have a text model below 2B (the
 
 ## What's Next
 
-DPO (Direct Preference Optimization) for safety, so the model learns to refuse dangerous commands from preference pairs rather than conflicting SFT examples. And multi-turn agent capabilities, where the model can run a command, see the output, and decide what to do next. But those are future iterations.
+DPO (Direct Preference Optimization) for safety, so the model learns to refuse dangerous commands from preference pairs rather than conflicting SFT examples. Another promising direction is [O-LoRA](https://arxiv.org/abs/2310.14002), which learns tasks in orthogonal low-rank subspaces to prevent interference. Instead of removing the safety data entirely, O-LoRA could let command generation and safety refusal coexist in the same adapter without the destructive interference we observed. And multi-turn agent capabilities, where the model can run a command, see the output, and decide what to do next. But those are future iterations.
 
 ---
 
