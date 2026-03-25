@@ -102,7 +102,7 @@ Evaluated on 67 test cases across 7 categories (file ops, text processing, git, 
 ## Project Structure
 
 ```
-├── cli.py                      # Terminal assistant CLI
+├── cli.py                      # Terminal agent CLI
 ├── adapters/                   # Best LoRA adapter (command-only, v7)
 ├── adapters_best_overall/      # Best overall adapter (v5, includes safety)
 ├── data/

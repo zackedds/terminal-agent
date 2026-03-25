@@ -1,15 +1,15 @@
-# Fine-Tuning a 2B Terminal Assistant on Apple Silicon
+# Fine-Tuning a 2B Terminal Agent on Apple Silicon
 *QLoRA, knowledge distillation, a GPU bug investigation, and what LoRA can't learn*
 
 `SFT` `QLoRA` `MLX` `Apple Silicon` `Qwen 3.5` `CLI Agent` `Distillation` `On-Device ML` `Metal GPU`
 
 ![Demo](./assets/demo.gif)
 
-**TL;DR:** Fine-tuned a 2B parameter model to be a terminal assistant using QLoRA on a MacBook. 59% → 91% accuracy on bash command generation, beating a model twice its size on most metrics with an 11MB adapter. Discovered a macOS GPU bug along the way and got an undocumented fix from the MLX team. Everything runs locally, trained in 28 minutes, $0 compute cost. **[GitHub Repo](https://github.com/zackedds/terminal-agent)**
+**TL;DR:** Fine-tuned a 2B parameter model to be a terminal agent using QLoRA on a MacBook. 59% → 91% accuracy on bash command generation, beating a model twice its size on most metrics with an 11MB adapter. Discovered a macOS GPU bug along the way and got an undocumented fix from the MLX team. Everything runs locally, trained in 28 minutes, $0 compute cost. **[GitHub Repo](https://github.com/zackedds/terminal-agent)**
 
 ---
 
-I wanted to build a terminal assistant that runs entirely on my laptop. No API calls, no cloud GPUs, no subscriptions. Just a tiny language model that lives on-device and knows how to write bash commands. The idea: use a frontier model (Claude Sonnet) to generate thousands of expert bash examples, then fine-tune a **2B parameter model** on that data so it runs locally on a MacBook Pro M2 Pro with 16GB of RAM.
+I wanted to build a terminal agent that runs entirely on my laptop. No API calls, no cloud GPUs, no subscriptions. Just a tiny language model that lives on-device and knows how to write bash commands. The idea: use a frontier model (Claude Sonnet) to generate thousands of expert bash examples, then fine-tune a **2B parameter model** on that data so it runs locally on a MacBook Pro M2 Pro with 16GB of RAM.
 
 The base model could already follow the tool-calling format most of the time (**92% format compliance**), but the actual commands it generated were **wrong nearly half the time**. It knew *how* to call the tool, just not *what* to put in it. Fine-tuning with high-quality examples fixed that mapping.
 
