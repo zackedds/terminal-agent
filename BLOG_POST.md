@@ -38,7 +38,7 @@ The setup:
 - **Docker sandbox** running Ubuntu 22.04 with a realistic developer workspace (Python/JS webapp, git history, multiple branches, log files)
 - **Network isolation** so nothing phones home
 - **Fresh container per trial** so tests can't contaminate each other
-- **67 test cases** across 7 categories, each run **3 times** (201 total trials per evaluation)
+- **67 test cases** across 7 categories (I defined the categories, scoring criteria, and expected outputs; used Claude to help generate individual cases to spec), each run **3 times** (201 total trials per evaluation)
 - **Automated scoring** on format compliance, syntax validity, execution success, functional correctness, and consistency
 
 This eval-first approach meant every training decision was data-driven. When a later training run regressed, I didn't have to guess. The numbers told me exactly what broke and by how much.
